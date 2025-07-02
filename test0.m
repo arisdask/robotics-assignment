@@ -1,37 +1,42 @@
 % Define symbolic variables
-syms phi h l l_o
+syms theta phi l l_o h theta_dot phi_dot
 
-% Define trigonometric functions
+% Define cos and sin shortcuts for simplification
+c_theta = cos(theta);
+s_theta = sin(theta);
 c_phi = cos(phi);
 s_phi = sin(phi);
 
-% Define the first matrix
-A = [0,      -1,     0;
-     c_phi,   0,     s_phi;
-     -s_phi,  0,     c_phi];
+% Define rotation matrix R_{0h}
+R_0h = [s_theta,           c_phi*c_theta,       -c_theta*s_phi;
+        -c_theta,          c_phi*s_theta,       -s_phi*s_theta;
+        0,                 s_phi,               c_phi];
 
-% Define the second matrix
-B = [0,   -h,      0;
-     h,    0,     -(l-l_o);
-     0,   l-l_o,   0];
+% Define position vector p0h
+p0h = [c_theta*(l - l_o);
+       s_theta*(l - l_o) + 2;
+       h;];
 
-% Compute the matrix multiplication
-Result = A * B;
+% Define skew-symmetric matrix p0h_hat
+p0h_hat = [0,                         -h,                 s_theta*(l - l_o) + 2;
+           h,                         0,                  -c_theta*(l - l_o);
+           -s_theta*(l - l_o) + 2,    c_theta*(l - l_o),  0];
 
-% Display the result
-disp('Matrix A:')
-disp(A)
-disp('Matrix B:')
-disp(B)
-disp('Result A * B:')
-disp(Result)
+% Define velocity vector v_c
+v_c = [-(l - l_o)*theta_dot;
+       0;
+       0];
 
-% Simplify the result using trigonometric identities
-Result_simplified = simplify(Result, 'Steps', 100);
-disp('Simplified Result:')
-disp(Result_simplified)
+% Define angular velocity vector omega
+omega = [phi_dot;
+         s_phi*theta_dot;
+         c_phi*theta_dot];
 
-% Apply additional trigonometric simplifications
-Result_trig_simplified = simplify(Result_simplified, 'IgnoreAnalyticConstraints', true);
-disp('Further trigonometric simplification:')
-disp(Result_trig_simplified)
+% Calculate the final answer
+Ans = R_0h * v_c + p0h_hat * R_0h * omega;
+
+% Simplify the result
+Ans_simplified = simplify(Ans);
+
+disp('Simplified Answer:');
+disp(Ans_simplified);
