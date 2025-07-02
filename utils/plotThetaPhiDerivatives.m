@@ -17,7 +17,7 @@ function plotThetaPhiDerivatives(theta, theta_dot, theta_ddot, phi, phi_dot, phi
     hold on;
     xline(t1, 'k--', 'LineWidth', 1.5, 'Alpha', 0.7, 'DisplayName', 'Trajectory Transition');
     xlabel('Time (s)', 'FontSize', 12);
-    ylabel('\phi(t) (rad)', 'FontSize', 12);  % Added units
+    ylabel('\phi(t) (rad)', 'FontSize', 12);
     title('\phi(t) - Position', 'FontSize', 14, 'FontWeight', 'bold');
     legend('Location', 'best', 'FontSize', 10);
     grid on;
@@ -31,8 +31,8 @@ function plotThetaPhiDerivatives(theta, theta_dot, theta_ddot, phi, phi_dot, phi
     hold on;
     xline(t1, 'k--', 'LineWidth', 1.5, 'Alpha', 0.7, 'DisplayName', 'Trajectory Transition');
     xlabel('Time (s)', 'FontSize', 12);
-    ylabel('d\phi/dt (rad/s)', 'FontSize', 12);  % Better notation and units
-    title('d\phi/dt - Angular Velocity', 'FontSize', 14, 'FontWeight', 'bold');  % More descriptive
+    ylabel('d\phi/dt (rad/s)', 'FontSize', 12);
+    title('d\phi/dt - Angular Velocity', 'FontSize', 14, 'FontWeight', 'bold');
     legend('Location', 'best', 'FontSize', 10);
     grid on;
     grid minor;
@@ -45,8 +45,8 @@ function plotThetaPhiDerivatives(theta, theta_dot, theta_ddot, phi, phi_dot, phi
     hold on;
     xline(t1, 'k--', 'LineWidth', 1.5, 'Alpha', 0.7, 'DisplayName', 'Trajectory Transition');
     xlabel('Time (s)', 'FontSize', 12);
-    ylabel('d²\phi/dt² (rad/s²)', 'FontSize', 12);  % Better notation and units
-    title('d²\phi/dt² - Angular Acceleration', 'FontSize', 14, 'FontWeight', 'bold');  % More descriptive
+    ylabel('d²\phi/dt² (rad/s²)', 'FontSize', 12);
+    title('d²\phi/dt² - Angular Acceleration', 'FontSize', 14, 'FontWeight', 'bold');
     legend('Location', 'best', 'FontSize', 10);
     grid on;
     grid minor;
@@ -57,7 +57,7 @@ function plotThetaPhiDerivatives(theta, theta_dot, theta_ddot, phi, phi_dot, phi
     sgtitle('Phi Function and its Derivatives', 'FontSize', 16, 'FontWeight', 'bold');
     
     % Create figure for THETA functions
-    figure('Name', 'Theta Functions and Derivatives', 'NumberTitle', 'off', 'Position', [100, 600, 1400, 500]);
+    figure('Name', 'Theta Functions and Derivatives', 'NumberTitle', 'off', 'Position', [100, 200, 1400, 500]);
     
     % Theta function (position)
     subplot(1, 3, 1);
@@ -65,7 +65,7 @@ function plotThetaPhiDerivatives(theta, theta_dot, theta_ddot, phi, phi_dot, phi
     hold on;
     xline(t1, 'k--', 'LineWidth', 1.5, 'Alpha', 0.7, 'DisplayName', 'Trajectory Transition');
     xlabel('Time (s)', 'FontSize', 12);
-    ylabel('\theta(t) (rad)', 'FontSize', 12);  % Added units
+    ylabel('\theta(t) (rad)', 'FontSize', 12);
     title('\theta(t) - Position', 'FontSize', 14, 'FontWeight', 'bold');
     legend('Location', 'best', 'FontSize', 10);
     grid on;
@@ -79,8 +79,8 @@ function plotThetaPhiDerivatives(theta, theta_dot, theta_ddot, phi, phi_dot, phi
     hold on;
     xline(t1, 'k--', 'LineWidth', 1.5, 'Alpha', 0.7, 'DisplayName', 'Trajectory Transition');
     xlabel('Time (s)', 'FontSize', 12);
-    ylabel('d\theta/dt (rad/s)', 'FontSize', 12);  % Better notation and units
-    title('d\theta/dt - Angular Velocity', 'FontSize', 14, 'FontWeight', 'bold');  % More descriptive
+    ylabel('d\theta/dt (rad/s)', 'FontSize', 12);
+    title('d\theta/dt - Angular Velocity', 'FontSize', 14, 'FontWeight', 'bold');
     legend('Location', 'best', 'FontSize', 10);
     grid on;
     grid minor;
@@ -93,8 +93,8 @@ function plotThetaPhiDerivatives(theta, theta_dot, theta_ddot, phi, phi_dot, phi
     hold on;
     xline(t1, 'k--', 'LineWidth', 1.5, 'Alpha', 0.7, 'DisplayName', 'Trajectory Transition');
     xlabel('Time (s)', 'FontSize', 12);
-    ylabel('d²\theta/dt² (rad/s²)', 'FontSize', 12);  % Better notation and units
-    title('d²\theta/dt² - Angular Acceleration', 'FontSize', 14, 'FontWeight', 'bold');  % More descriptive
+    ylabel('d²\theta/dt² (rad/s²)', 'FontSize', 12);
+    title('d²\theta/dt² - Angular Acceleration', 'FontSize', 14, 'FontWeight', 'bold');
     legend('Location', 'best', 'FontSize', 10);
     grid on;
     grid minor;
@@ -103,11 +103,4 @@ function plotThetaPhiDerivatives(theta, theta_dot, theta_ddot, phi, phi_dot, phi
     
     % Adjust subplot spacing for theta figure
     sgtitle('Theta Function and its Derivatives', 'FontSize', 16, 'FontWeight', 'bold');
-    
-    % Display some information about the functions
-    fprintf('Theta and Phi derivatives plotting completed successfully.\n');
-    fprintf('Piecewise functions plotted:\n');
-    fprintf('- phi(t), phi_dot(t), phi_ddot(t)\n');
-    fprintf('- theta(t), theta_dot(t), theta_ddot(t)\n');
-    fprintf('Transition occurs at t = %.4f s\n', t1);
 end

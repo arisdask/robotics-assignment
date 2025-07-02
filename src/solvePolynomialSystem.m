@@ -17,11 +17,11 @@ function [polyFunc, polyFunc_dot, polyFunc_ddot] = solvePolynomialSystem(tStart,
     
     % Validate inputs
     if ~isscalar(tStart) || ~isscalar(tEnd)
-        error('tStart and tEnd must be scalar values');
+        error('solvePolynomialSystem: tStart and tEnd must be scalar values');
     end
     
     if ~isvector(b) || length(b) ~= 6
-        error('b must be a 6x1 vector');
+        error('solvePolynomialSystem: b must be a 6x1 vector');
     end
     
     % Ensure b is a column vector
@@ -37,7 +37,7 @@ function [polyFunc, polyFunc_dot, polyFunc_ddot] = solvePolynomialSystem(tStart,
     
     % Check if the matrix is well-conditioned
     if rcond(A) < eps
-        warning('Matrix is close to singular. Solution may be inaccurate.');
+        warning('solvePolynomialSystem: Matrix is close to singular. Solution may be inaccurate.');
     end
     
     % Solve the linear system A*k = b
@@ -46,4 +46,21 @@ function [polyFunc, polyFunc_dot, polyFunc_ddot] = solvePolynomialSystem(tStart,
     polyFunc      = @(t) k(1) + k(2)*t + k(3)*t.^2 + k(4)*t.^3   + k(5)*t.^4    + k(6)*t.^5;
     polyFunc_dot  = @(t)        k(2)   + 2*k(3)*t  + 3*k(4)*t.^2 + 4*k(5)*t.^3  + 5*k(6)*t.^4;
     polyFunc_ddot = @(t)                 2*k(3)    + 6*k(4)*t    + 12*k(5)*t.^2 + 20*k(6)*t.^3;
+
+    
+    % Display results
+    fprintf('\n=============================    Polynomial System Solution    =============================\n');
+    fprintf('Time interval: [%.2f, %.2f]\n', tStart, tEnd);
+    fprintf('Boundary conditions vector b:\n');
+    fprintf('  b = [%.3f, %.3f, %.3f, %.3f, %.3f, %.3f]''\n', b);
+    fprintf('\nSolved polynomial coefficients k:\n');
+    fprintf('  k0 = %.4f\n', k(1));
+    fprintf('  k1 = %.4f\n', k(2));
+    fprintf('  k2 = %.4f\n', k(3));
+    fprintf('  k3 = %.4f\n', k(4));
+    fprintf('  k4 = %.4f\n', k(5));
+    fprintf('  k5 = %.4f\n', k(6));
+    fprintf('\nPolynomial: p(t) = %.4f + %.4f*t + %.4f*t^2 + %.4f*t^3 + %.4f*t^4 + %.4f*t^5\n', ...
+            k(1), k(2), k(3), k(4), k(5), k(6));
+    fprintf('==============================================================================================\n\n');
 end
