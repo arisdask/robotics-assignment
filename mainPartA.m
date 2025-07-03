@@ -90,5 +90,37 @@ plotSpatialVelocityAnalysis(V0h_0, t_plot, t0, t1, tf);
 %% Transformation Matrices for: Initial and Final Positons
 plotInitAndFinalPositions(T0, T0d(t0), T0h(t0), T0d(t1), T0h(t1),T0d(tf), T0h(tf));
 
+% Plot quaternion orientation trajectories on unit sphere
+fprintf('=== 3D Quaternion Trajectory on Unit Sphere ===\n\n');
+T_array = zeros(4, 4, length(t_plot));
+
+for i = 1:length(t_plot)
+    T_array(:,:,i) = T0h(t_plot(i));
+end
+
+% Convert array to Unit Quaternions
+Q_array = UnitQuaternion(T_array);
+figure('Name', 'Trajectory', 'Position', [100, 100, 800, 600]);
+
+% Plot the unit sphere
+plotUnitSphere();
+hold on;
+
+% Extract quaternion components for 3D plotting
+% Using the vector part of quaternions for 3D coordinates
+% [x, y, z] = extractQuaternionCoords(Q_array);
+[x, y, z] = extractRotatedAxis(Q_array);
+
+
+% Plot the trajectory
+plot3(x, y, z, 'r-', 'LineWidth', 2);
+plot3(x(1), y(1), z(1), 'go', 'MarkerSize', 8, 'MarkerFaceColor', 'g'); % Start
+plot3(x(end), y(end), z(end), 'ro', 'MarkerSize', 8, 'MarkerFaceColor', 'r'); % End
+
+title('Quaternion Rotations Trajectory');
+legend('Unit Sphere', 'Trajectory', 'Start', 'End', 'Location', 'best');
+Q_array.animate('fps', 5, 'axis', [-1 1 -1 1 -1 1]);
+
+
 %% Animation
 animateTr3D(T0, T0d, T0h, theta, phi, t_plot);
