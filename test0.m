@@ -1,42 +1,41 @@
+% Matrix multiplication with trigonometric functions
+% Using symbolic variables for theta, phi, l, l_o, and h
+
 % Define symbolic variables
-syms theta phi l l_o h theta_dot phi_dot
+syms theta phi l l_o h
 
-% Define cos and sin shortcuts for simplification
-c_theta = cos(theta);
+% Define trigonometric functions using symbolic variables
 s_theta = sin(theta);
-c_phi = cos(phi);
+c_theta = cos(theta);
 s_phi = sin(phi);
+c_phi = cos(phi);
 
-% Define rotation matrix R_{0h}
-R_0h = [s_theta,           c_phi*c_theta,       -c_theta*s_phi;
-        -c_theta,          c_phi*s_theta,       -s_phi*s_theta;
-        0,                 s_phi,               c_phi];
+% Define the first matrix A
+A = [s_theta,           c_phi*c_theta,      -c_theta*s_phi,     c_theta*(l - l_o);
+     -c_theta,          c_phi*s_theta,      -s_phi*s_theta,     s_theta*(l - l_o) + 2;
+     0,                 s_phi,              c_phi,              h;
+     0,                 0,                  0,                  1];
 
-% Define position vector p0h
-p0h = [c_theta*(l - l_o);
-       s_theta*(l - l_o) + 2;
-       h;];
+% Define the second matrix B
+B = [0,  0, -1,  0.1;
+     0,  1,  0,  0.1;
+     1,  0,  0,  0;
+     0,  0,  0,  1];
 
-% Define skew-symmetric matrix p0h_hat
-p0h_hat = [0,                         -h,                 s_theta*(l - l_o) + 2;
-           h,                         0,                  -c_theta*(l - l_o);
-           -s_theta*(l - l_o) + 2,    c_theta*(l - l_o),  0];
+% Perform matrix multiplication
+C = A * B;
 
-% Define velocity vector v_c
-v_c = [-(l - l_o)*theta_dot;
-       0;
-       0];
+% Display the matrices
+fprintf('Matrix A:\n');
+disp(A);
 
-% Define angular velocity vector omega
-omega = [phi_dot;
-         s_phi*theta_dot;
-         c_phi*theta_dot];
+fprintf('\nMatrix B:\n');
+disp(B);
 
-% Calculate the final answer
-Ans = R_0h * v_c + p0h_hat * R_0h * omega;
+fprintf('\nResult C = A * B:\n');
+disp(C);
 
 % Simplify the result
-Ans_simplified = simplify(Ans);
-
-disp('Simplified Answer:');
-disp(Ans_simplified);
+C_simplified = simplify(C);
+fprintf('\nSimplified result:\n');
+disp(C_simplified);
