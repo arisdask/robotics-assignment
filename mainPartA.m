@@ -1,11 +1,16 @@
-%% Robotics Assignment - Part A - Door Kinematics Analysis
-% This script analyzes the kinematics of a door with a rotating handle
+%% Robotics Assignment - Parts A & B
+% This script ...
 % Author: Aristeidis Daskalopoulos
-% info: This file includes the whole implementation of assignment's Part A
+% info: 
+%   This file includes the whole implementation of assignment's Parts A & B
 
 %% Initialize Problem
 clear; clc; close all;
 addpath('utils\'); addpath('src\');
+
+% Control flag for pause behavior throughout the script
+% Pauses are only used for animations to be presented correctly before moving to the next one
+debugMode = 1;  % Set the flag to 0 to disable all `pause;` commands
 
 % Door parameters
 l  = 1.0;    % Door width (m)
@@ -14,7 +19,7 @@ lo = 0.1;    % Handle offset from door edge (m)
 
 % Times Values
 t0 = 0;  t1 = 2.5;  tf = 5;
-ts = 0.05;          % Sampling rate for plots (sec)
+ts = 0.05;          % Sampling rate for plots (sec) (its adjusted at Part B)
 t_plot = t0:ts:tf;  % Time vector for plotting [t0, tf]
 
 
@@ -90,37 +95,54 @@ plotSpatialVelocityAnalysis(V0h_0, t_plot, t0, t1, tf);
 %% Transformation Matrices for: Initial and Final Positons
 plotInitAndFinalPositions(T0, T0d(t0), T0h(t0), T0d(t1), T0h(t1),T0d(tf), T0h(tf));
 
-% Plot quaternion orientation trajectories on unit sphere
-fprintf('=== 3D Quaternion Trajectory on Unit Sphere ===\n\n');
-T_array = zeros(4, 4, length(t_plot));
-
-for i = 1:length(t_plot)
-    T_array(:,:,i) = T0h(t_plot(i));
-end
-
-% Convert array to Unit Quaternions
-Q_array = UnitQuaternion(T_array);
-figure('Name', 'Trajectory', 'Position', [100, 100, 800, 600]);
-
-% Plot the unit sphere
-plotUnitSphere();
-hold on;
-
-% Extract quaternion components for 3D plotting
-% Using the vector part of quaternions for 3D coordinates
-% [x, y, z] = extractQuaternionCoords(Q_array);
-[x, y, z] = extractRotatedAxis(Q_array);
-
-
-% Plot the trajectory
-plot3(x, y, z, 'r-', 'LineWidth', 2);
-plot3(x(1), y(1), z(1), 'go', 'MarkerSize', 8, 'MarkerFaceColor', 'g'); % Start
-plot3(x(end), y(end), z(end), 'ro', 'MarkerSize', 8, 'MarkerFaceColor', 'r'); % End
-
-title('Quaternion Rotations Trajectory');
-legend('Unit Sphere', 'Trajectory', 'Start', 'End', 'Location', 'best');
-Q_array.animate('fps', 5, 'axis', [-1 1 -1 1 -1 1]);
-
-
-%% Animation
+%% Quaternion Orientation trajectories on Unit Sphere
+plotUnitQuaternions(t_plot, T0h);
+customPause("Custom Animation", debugMode);
+%% Custom Animation
 animateTr3D(T0, T0d, T0h, theta, phi, t_plot);
+customPause("PartB", debugMode);
+
+%% Part B - Initialize Problem
+addpath('robot_model\');  % Load the UR10 model
+ur10 = ur10robot();
+q0   = [-1.7752 -1.1823 0.9674 0.2149 1.3664 1.5708];  % initial robot configs
+
+ts     = 0.01;      % Sampling rate for Part B's plots (sec)
+t_plot = t0:ts:tf;  % Time vector for plotting [t0, tf]
+
+plotInitRobotPosition(ur10, q0, T0, T0d, T0h, t0);
+
+%% Extra Transformation Matrices
+The = [  % Function to compute frame {e} transformation relative to {h}
+    0, 0, -1,  0.1;
+    0, 1,  0,  0.1;
+    1, 0,  0,  0;
+    0, 0,  0,  1;
+];
+
+T0b = [  % Function to compute frame {B} transformation relative to {0}
+    1, 0,  0,  1;
+    0, 1,  0,  1;
+    0, 0,  1,  0;
+    0, 0,  0,  1;
+];
+
+Tb0 = [  % Function to compute frame {0} transformation relative to {B}
+    1, 0,  0,  -1;
+    0, 1,  0,  -1;
+    0, 0,  1,  0;
+    0, 0,  0,  1;
+];
+
+Tbe = @(t) Tb0 * T0h(t) * The;  % Function to compute frame {e} transformation relative to {B}
+
+Rbe     = @(t) extractRotation(Tbe(t));
+Rbe_dot = @(t) numericalDiff(Rbe, t);
+pbe     = @(t) extractPosition(Tbe(t));
+pbe_dot = @(t) numericalDiff(pbe, t);
+
+% Function to compute the spatial velocity of the frame {e}
+% with respect to the base frame {B}, expressed in the coordinates of {e}
+Vbe_e =  @(t) [Rbe(t)' * pbe_dot(t); vex(Rbe(t)' * Rbe_dot(t))];
+
+[t, qr] = qrSystemDynamics(t_plot, Vbe_e);
