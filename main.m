@@ -105,14 +105,14 @@ customPause("PartB", debugMode);
 %% Part B - Initialize Problem
 addpath('robot_model\');  % Load the UR10 model
 ur10 = ur10robot();
-q0   = [-1.7752 -1.1823 0.9674 0.2149 1.3664 1.5708];  % initial robot configs
+qr0   = [-1.7752 -1.1823 0.9674 0.2149 1.3664 1.5708];  % initial robot configs
 
 ts     = 0.01;      % Sampling rate for Part B's plots (sec)
 t_plot = t0:ts:tf;  % Time vector for plotting [t0, tf]
 
-plotInitRobotPosition(ur10, q0, T0, T0d, T0h, t0);
+plotInitRobotPosition(ur10, qr0, T0, T0d, T0h, t0);
 
-%% Extra Transformation Matrices
+%% Transformation Matrices and Spatial Velocity of {e}
 The = [  % Function to compute frame {e} transformation relative to {h}
     0, 0, -1,  0.1;
     0, 1,  0,  0.1;
@@ -143,6 +143,23 @@ pbe_dot = @(t) numericalDiff(pbe, t);
 
 % Function to compute the spatial velocity of the frame {e}
 % with respect to the base frame {B}, expressed in the coordinates of {e}
-Vbe_e =  @(t) [Rbe(t)' * pbe_dot(t); vex(Rbe(t)' * Rbe_dot(t))];
+Vbe_e =  @(t) [Rbe(t)' * pbe_dot(t); skewToVec(Rbe(t)' * Rbe_dot(t))];
 
-[t, qr] = qrSystemDynamics(t_plot, Vbe_e);
+%% Solve ODE
+% Returns the Euler Methods Results
+qr     = qrSystemSolver(ur10, qr0, t_plot, Vbe_e);
+qr_dot = computeJointVelocities(t_plot, qr);
+customPause("Show Robot Position", debugMode);
+
+%% End Effector Posotions
+T0e_arraySE3 = ur10.fkine(qr);
+T0e_arrayMat = T0e_arraySE3.T;
+
+The_arrayMat = T0e_arrayMat;
+
+for i = 1:length(t_plot)
+    The_arrayMat(:, :, i) = pinv( T0h(t_plot(i)) ) * T0e_arrayMat(:, :, i);
+end
+
+%% Final Custom Animation 
+animate3DWithRobot(ur10, qr, T0, T0d, T0h, theta, phi, t_plot, 100)

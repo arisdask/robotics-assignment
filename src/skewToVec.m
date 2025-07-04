@@ -1,4 +1,4 @@
-function v = vex(S)
+function v = skewToVec(S)
     % Extract vector from skew-symmetric matrix
     % For 3x3 skew-symmetric matrix S, returns 3x1 vector v
     % such that S = hat(v), where hat() is the skew-symmetric operator
