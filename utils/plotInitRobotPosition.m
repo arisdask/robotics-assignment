@@ -10,7 +10,7 @@ function plotInitRobotPosition(ur10, q0, T0, T0d, T0h, t0)
     % Set axis properties
     axis equal; grid on;
     xlim([0, 2.5]);  ylim([0, 2.5]);  zlim([0, 1.5]);
-    xlabel('x_0');      ylabel('y_0');      zlabel('z_0');     view(15, 30);
+    xlabel('x_0');      ylabel('y_0');      zlabel('z_0');
     ur10.plot(q0, 'workspace', W);
     view(120, 45);
 end
