@@ -26,7 +26,7 @@ function plotInitAndFinalPositions(T0, T0D_t0, T0H_t0, T0D_t1, T0H_t1, T0D_tf, T
     axis equal; grid on;
     xlim([-0.5, 2.5]);  ylim([-0.5, 2.5]);  zlim([0, 1.2]);
     xlabel('x_0');      ylabel('y_0');      zlabel('z_0');
-    title('Door Open (\theta = 0°, \phi = -45°, t_1 = 2.5s)');     view(15, 30);
+    title('Handle Open (\theta = 0°, \phi = -45°, t_1 = 2.5s)');     view(15, 30);
 
     
     % Plot 3: Door Open (tf = 5s)

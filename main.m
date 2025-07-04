@@ -1,8 +1,6 @@
 %% Robotics Assignment - Parts A & B
-% This script ...
 % Author: Aristeidis Daskalopoulos
-% info: 
-%   This file includes the whole implementation of assignment's Parts A & B
+% info:   This script includes the whole implementation of Parts A & B
 
 %% Initialize Problem
 clear; clc; close all;
@@ -19,14 +17,17 @@ lo = 0.1;    % Handle offset from door edge (m)
 
 % Times Values
 t0 = 0;  t1 = 2.5;  tf = 5;
-ts = 0.05;          % Sampling rate for plots (sec) (its adjusted at Part B)
+ts = 0.05;          % Sampling rate for plots (sec) (its adjusted to 0.01 at Part B)
 t_plot = t0:ts:tf;  % Time vector for plotting [t0, tf]
 
 
 %% Polynomial Trajectory Planning
+fprintf('\nFor φ1 in [t0, t1]:\n');
 [phi1, phi1_dot, phi1_ddot]       =  solvePolynomialSystem(t0, t1, [0; 0; 0; -pi/4; 0; 0]);
 [theta1, theta1_dot, theta1_ddot] =  deal(0, 0, 0);  % Constants
+fprintf('\nFor φ2 in [t1, tf]:\n');
 [phi2, phi2_dot, phi2_ddot]       =  solvePolynomialSystem(t1, tf, [-pi/4; 0; 0; 0; 0; 0]);
+fprintf('\nFor θ2 in [t1, tf]:\n');
 [theta2, theta2_dot, theta2_ddot] =  solvePolynomialSystem(t1, tf, [0; 0; 0; -pi/6; 0; 0]);
 
 % Piecewise function handlers for phi and its derivatives
@@ -96,10 +97,11 @@ plotSpatialVelocityAnalysis(V0h_0, t_plot, t0, t1, tf);
 plotInitAndFinalPositions(T0, T0d(t0), T0h(t0), T0d(t1), T0h(t1),T0d(tf), T0h(tf));
 
 %% Quaternion Orientation trajectories on Unit Sphere
-plotUnitQuaternions(t_plot, T0h);
+plotUnitQuaternions(t_plot, T0h, true);
 customPause("Custom Animation", debugMode);
+
 %% Custom Animation
-animateTr3D(T0, T0d, T0h, theta, phi, t_plot);
+animateTr3D(T0, T0d, T0h, theta, phi, t_plot, 2);
 customPause("PartB", debugMode);
 
 %% Part B - Initialize Problem
@@ -149,9 +151,9 @@ Vbe_e =  @(t) [Rbe(t)' * pbe_dot(t); skewToVec(Rbe(t)' * Rbe_dot(t))];
 % Returns the Euler Methods Results
 qr     = qrSystemSolver(ur10, qr0, t_plot, Vbe_e);
 qr_dot = computeJointVelocities(t_plot, qr);
-customPause("Show Robot Position", debugMode);
+customPause("Show end effector position and Unit Qauternion", debugMode);
 
-%% End Effector Posotions
+%% End Effector's Posotions & Unit Quaternions, wrt 0 and H
 T0e_arraySE3 = ur10.fkine(qr);
 T0e_arrayMat = T0e_arraySE3.T;
 
@@ -160,6 +162,9 @@ The_arrayMat = T0e_arrayMat;
 for i = 1:length(t_plot)
     The_arrayMat(:, :, i) = pinv( T0h(t_plot(i)) ) * T0e_arrayMat(:, :, i);
 end
+plotUnitQuaternionsM(t_plot, T0e_arrayMat, true, "g_{0e}");
+plotUnitQuaternionsM(t_plot, The_arrayMat, false, "g_{he}");
+customPause("Show Final Animation", debugMode);
 
 %% Final Custom Animation 
-animate3DWithRobot(ur10, qr, T0, T0d, T0h, theta, phi, t_plot, 100)
+animate3DWithRobot(ur10, qr, T0, T0d, T0h, theta, phi, t_plot, 10);

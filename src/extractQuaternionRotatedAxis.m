@@ -1,4 +1,4 @@
-function [x, y, z] = extractRotatedAxis(Q_array, axis)
+function [x, y, z] = extractQuaternionRotatedAxis(Q_array, axis)
     v = [0; 0; 1];
     if axis == 'x'
         v = [1; 0; 0];

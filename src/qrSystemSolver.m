@@ -49,11 +49,6 @@ function qr = qrSystemSolver(ur10, qr0, tspan, Vbe_e, h)
     legend('q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'Location', 'best');
     grid on;
     
-    % Display comparison
-    fprintf('=== Final Joint Angles Comparison ===\n');
-    fprintf('ODE45 final angles: [%.4f, %.4f, %.4f, %.4f, %.4f, %.4f]\n', qr(end,:));
-    fprintf('Euler final angles: [%.4f, %.4f, %.4f, %.4f, %.4f, %.4f]\n', qr_euler(:, end)');
-    
     % Calculate and display error
     if length(t) == length(t_euler)
         % Interpolate ODE45 results to match Euler time points for comparison

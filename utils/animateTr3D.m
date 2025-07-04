@@ -1,8 +1,8 @@
-function animateTr3D(T0, T0d, T0h, theta, phi, t_plot)
+function animateTr3D(T0, T0d, T0h, theta, phi, t_plot, speed)
     n_points = length(t_plot);
 
     figure;
-    for i = 1:n_points
+    for i = 1:speed:n_points
         T0d_ti = T0d(t_plot(i));
         T0h_ti = T0h(t_plot(i));
         

@@ -1,18 +1,16 @@
-function plotUnitQuaternions(t_plot, T0h, animateFlag)
-    T_array = zeros(4, 4, length(t_plot));
+function plotUnitQuaternionsM(t_plot, T_arrayMat, animateFlag, name)
     x_axis = zeros(length(t_plot), 1);
     y_axis = zeros(length(t_plot), 1);
     z_axis = zeros(length(t_plot), 1);
     for i = 1:length(t_plot)
-        T0h_i = T0h(t_plot(i));
+        T0h_i = T_arrayMat(:, :, i);
         x_axis(i) = T0h_i(1, 4);
         y_axis(i) = T0h_i(2, 4);
         z_axis(i) = T0h_i(3, 4);
-        T_array(:,:,i) = T0h_i;
     end
     
     % Convert array to Unit Quaternions
-    Q_array = UnitQuaternion(T_array);
+    Q_array = UnitQuaternion(T_arrayMat);
     
     % Plot quaternion orientation trajectories on unit sphere
     figure('Name', '3D Quaternion Trajectory on Unit Sphere', 'NumberTitle', 'off', ...
@@ -26,7 +24,7 @@ function plotUnitQuaternions(t_plot, T0h, animateFlag)
     plot3(x, y, z, 'r-', 'LineWidth', 2);
     plot3(x(1), y(1), z(1), 'go', 'MarkerSize', 5, 'MarkerFaceColor', 'g'); % Start 
     scatter3(x(end), y(end), z(end), 100, 'r', 'filled', 'MarkerFaceAlpha', 0.6); % End
-    title('3D Quaternion Orientation Trajectory');
+    title(sprintf('3D Quaternion Orientation Trajectory based on %s', name));
     legend('Unit Sphere', 'Trajectory', 'Start', 'End', 'Location', 'best');
     
     subplot(1, 2, 2);  hold on;
@@ -35,7 +33,7 @@ function plotUnitQuaternions(t_plot, T0h, animateFlag)
     theta = extractQuaternionAngle(Q_array);
     % Plot the trajectory
     plot(t_plot, theta, 'b-', 'LineWidth', 2);
-    title('Quaternion Orientation: Angle vs Time Plot)');
+    title(sprintf('Quaternion Orientation: Angle-Time, based on %s', name));
     xlabel('Time (s)', 'FontSize', 12);
     ylabel('Q.\theta (rad)', 'FontSize', 12);
     grid on;
@@ -47,7 +45,7 @@ function plotUnitQuaternions(t_plot, T0h, animateFlag)
     hold on;
     plot(t_plot, y_axis, 'r-', 'LineWidth', 2);
     plot(t_plot, z_axis, 'g-', 'LineWidth', 2);
-    title('Frame Position Plot (x, y, z)');
+    title(sprintf('End Effector Position Plot (x, y, z), based on %s', name));
     xlabel('Time (s)', 'FontSize', 12);
     ylabel('Position (m)', 'FontSize', 12);
     legend('x-axis', 'y-axis', 'z-axis', 'Location', 'best');
@@ -63,7 +61,7 @@ function plotUnitQuaternions(t_plot, T0h, animateFlag)
         plot3(x, y, z, 'g-', 'LineWidth', 1);
         [x, y, z] = extractQuaternionRotatedAxis(Q_array, 'z');
         plot3(x, y, z, 'b-', 'LineWidth', 1);
-        title('Quaternion Animation on Unit Sphere');
+        title(sprintf('Animation on Unit Sphere based on %s', name));
         legend('Unit Sphere', 'x-axis', 'y-axis', 'z-axis', 'Location', 'best');
         
         Q_array.animate('fps', 5, 'axis', [-1 1 -1 1 -1 1]);
