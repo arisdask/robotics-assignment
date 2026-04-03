@@ -20,7 +20,6 @@ MATLAB implementation of the 2025 Robotics assignment (ECE AUTh), including full
 - `utils/`: plotting and animation helpers.
 - `robot_model/ur10robot.m`: UR10 model definition.
 - `plotsPartA/`, `plotsPartB/`: exported figures used in the report.
-- `report.tex`: full written analysis and discussion.
 
 ## How to run
 1. Open the project in MATLAB.
@@ -31,4 +30,4 @@ MATLAB implementation of the 2025 Robotics assignment (ECE AUTh), including full
 	- Set `debugMode = 0` in `main.m` to skip pause prompts between animation sections.
 
 ## Notes
-- The report PDF (`arisdask_Robotics_Project.pdf`) and LaTeX source (`report.tex`) include the complete analysis and results.
+- The report PDF (`arisdask_Robotics_Project.pdf`) includes the complete analysis and results.
